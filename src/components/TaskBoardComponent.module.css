@@ -2,9 +2,15 @@
     position: relative;
     background-color: rgb(205, 205, 252);
     width:20rem;
+    margin-top: 10px;
+    margin-bottom: 10px;
     min-height: 10rem;
-    margin: 1rem;
     box-shadow: 2px 2px 5px #999;
+}
+
+.dragged {
+    transform: translate(0, -100px);
+    transition: 0.5s;
 }
 
 .tasks-container {
