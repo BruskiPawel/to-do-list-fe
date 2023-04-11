@@ -6,14 +6,21 @@ import classes from "./TaskBoardComponent.module.css";
 
 function TaskBoardComponent() {
   const [tasks, setTasks] = useState(null);
+  const [sortedTasks, setSortedTasks] = useState(null);
   const [draggedTask, setDraggedTask] = useState(null);
+  const [discardChanges, setDiscardChanges] = useState(false);
   const [errorMessage, setErrorMessage] = useState(null);
+  const [showSaveBtn, setShowSaveBtn] = useState(false);
 
   const getAllTasks = (taskArr) => {
     console.log("im in getalltasks compo");
     console.log(taskArr);
     setTasks(taskArr);
     setErrorMessage(error);
+  };
+  const postAllTasks = (taskArr) => {
+    console.log("im in post all compo");
+    setSortedTasks(tasks);
   };
 
   const { error, sendRequest: fetchTasks } = useHTTP(
@@ -26,38 +33,52 @@ function TaskBoardComponent() {
     getAllTasks
   );
 
+  const { postError, sendRequest: postTasks } = useHTTP(
+    "http://localhost:8080/post_sorted_tasks",
+    "POST",
+    { "Content-Type": "application/json" },
+    sortedTasks,
+    postAllTasks
+  );
+
   const fetch = useEffect(() => {
-    fetchTasks();
+      fetchTasks();
   }, []);
+
+  const post = useEffect(() => {
+    if (sortedTasks) {
+      postTasks();
+    }
+  }, [sortedTasks]);
 
   const handleDragStart = (e, item) => {
     setDraggedTask(item);
+    e.target.closest("div").classList.add(classes.dragged);
   };
 
   const handleDragOver = (e) => {
+    e.target.closest("div").classList.add(classes["dragged-over"]);
     e.preventDefault();
   };
 
-  const handleDragEnter = (e, task) => {
-    const target = e.target.closest("div");
-    if (target && target.classList.contains(classes.task)) {
-      target.classList.add(classes.dragged);
-     }
-  };
+  const handleDragEnter = (e, task) => {};
 
   const handleDragLeave = (e) => {
-    const target = e.target.closest("div");
-    if (target && target.classList.contains(classes.dragged)) {
-      
-    }
-    //target.classList.remove(classes.dragged);
+    e.target.closest("div").classList.remove(classes["dragged-over"]);
+  };
+  const handleDragEnd = (e) => {
+    e.target.closest("div").classList.remove(classes.dragged);
   };
 
   const handleDrop = (e) => {
-    console.log("drop");
+    setShowSaveBtn(true);
+    console.log("drop" + e.target.closest("div"));
+    e.target.closest("div").classList.remove(classes.dragged);
+
     const movedTask = tasks.find(
       (task) => task.id === parseInt(draggedTask.id)
     );
+
     const targetTask = tasks.find(
       (task) => task.id === parseInt(e.target.closest("div").id)
     );
@@ -74,7 +95,7 @@ function TaskBoardComponent() {
 
   return (
     <div>
-      <NewTaskComponent onSubmit={fetch} />
+      <NewTaskComponent onTaskAdd={fetchTasks}/>
       <div className={classes["tasks-container"]}>
         {tasks ? (
           tasks.map((task) => (
@@ -85,6 +106,7 @@ function TaskBoardComponent() {
               draggable
               onDragStart={(e) => handleDragStart(e, task)}
               onDragOver={handleDragOver}
+              onDragEnd={handleDragEnd}
               onDragEnter={(e) => handleDragEnter(e, task)}
               onDragLeave={(e) => handleDragLeave(e, task)}
               onDrop={handleDrop}
@@ -92,12 +114,22 @@ function TaskBoardComponent() {
               <h2>{task.title}</h2>
               <h3>{task.content}</h3>
               <p>{task.id}</p>
-              <DeleteTaskComponent />
+              <DeleteTaskComponent onTaskDelete={fetchTasks}/>
             </div>
           ))
         ) : (
           <div></div>
         )}
+        {showSaveBtn ? (
+          <div className={classes.saveSortedList}>
+            <button onClick={() => {postAllTasks(); setShowSaveBtn(false)}} className={classes.saveBtn}>
+              save changes
+            </button>
+            <button onClick={() => {fetchTasks(); setShowSaveBtn(false)}} className={classes.saveBtn}>
+              discard changes
+            </button>
+          </div>
+        ) : null}
       </div>
     </div>
   );

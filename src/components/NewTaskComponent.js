@@ -21,10 +21,9 @@ const NewTaskComponent = (props) => {
     null
   );
 
-  useEffect(() => {
+   useEffect(() => {
     if(newTask) {
-        console.log(newTask)
-        PostNewTask();
+        PostNewTask().then(() => props.onTaskAdd());
     }
   }, [newTask]);
 
