@@ -47,35 +47,3 @@ transform: scale(1.1);
     background-color: greenyellow;
     color: black;
 }
-
-.saveSortedList{
-    display: flex;
-    flex-direction: column;
-    justify-content: center;
-    align-items: center;
-    background-color: rgb(241, 241, 254);
-    box-shadow: 2px 2px 5px #999;
-    border-radius: 5%;
-    position: absolute;
-    height: 200px;
-    top: 50%;
-    right: 100px;
-    transform: translate(-50%, -50%);
-}
-
-.saveBtn {
-    margin: 10px;
-    border-radius: 10%;
-    background-color: lavender;
-    box-shadow: 2px 2px 5px #999;
-    border: none;
-    width: 110px;
-    height: 55px;
-    font-size: 18px;
-    transition: 0.5s;
-}
-
-
-.saveBtn:hover {
-    background-color: lavenderblush;
-}

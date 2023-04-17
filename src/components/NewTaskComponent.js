@@ -7,9 +7,13 @@ const NewTaskComponent = (props) => {
 
   const addNewTaskHandler = (e) => {
     e.preventDefault();
+   
+    const [year, month, day] = e.target.children[1].value.split("-");
+    const [hours, minutes] = e.target.children[3].value.split(":");
+    const dateTime = new Date(year, month -1, day, hours, minutes);
     setNewTask({
-        title: e.target.children[1].value,
-        content: e.target.children[3].value
+        date: dateTime,
+        content: e.target.children[5].value,
     })
   };
 
@@ -29,8 +33,10 @@ const NewTaskComponent = (props) => {
 
   return (
     <form onSubmit={addNewTaskHandler}>
-      <label>Title</label>
-      <input type="text" name="title" />
+      <label>date:</label>
+      <input type="date"></input>
+      <label>time:</label>
+      <input type="time"></input>
       <label>Content</label>
       <input type="text" name="content" />
       <button type="submit">add Task</button>

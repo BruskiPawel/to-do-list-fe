@@ -3,22 +3,29 @@ import useHTTP from "../hooks/use-http";
 import NewTaskComponent from "./NewTaskComponent";
 import DeleteTaskComponent from "./DeleteTaskComponent";
 import classes from "./TaskBoardComponent.module.css";
+import SaveButtonComponent from "./SaveButtonComponent";
 
 function TaskBoardComponent() {
   const [tasks, setTasks] = useState(null);
   const [sortedTasks, setSortedTasks] = useState(null);
   const [draggedTask, setDraggedTask] = useState(null);
-  const [discardChanges, setDiscardChanges] = useState(false);
-  const [errorMessage, setErrorMessage] = useState(null);
   const [showSaveBtn, setShowSaveBtn] = useState(false);
 
   const getAllTasks = (taskArr) => {
-    console.log("im in getalltasks compo");
-    console.log(taskArr);
-    setTasks(taskArr);
-    setErrorMessage(error);
+    const updatedTasks = taskArr.map((task) => ({
+      id: task.id,
+      date: new Date(
+        task.date[0],
+        task.date[1],
+        task.date[2],
+        task.date[3],
+        task.date[4]
+      ),
+      content: task.content,
+    }));
+    setTasks(updatedTasks);
   };
-  const postAllTasks = (taskArr) => {
+  const postAllTasks = () => {
     console.log("im in post all compo");
     setSortedTasks(tasks);
   };
@@ -42,11 +49,13 @@ function TaskBoardComponent() {
   );
 
   const fetch = useEffect(() => {
-      fetchTasks();
+    setShowSaveBtn(false)
+    fetchTasks();
   }, []);
 
   const post = useEffect(() => {
     if (sortedTasks) {
+      setShowSaveBtn(false)
       postTasks();
     }
   }, [sortedTasks]);
@@ -72,12 +81,9 @@ function TaskBoardComponent() {
 
   const handleDrop = (e) => {
     setShowSaveBtn(true);
-    console.log("drop" + e.target.closest("div"));
     e.target.closest("div").classList.remove(classes.dragged);
 
-    const movedTask = tasks.find(
-      (task) => task.id === parseInt(draggedTask.id)
-    );
+    const movedTask = tasks.find((task) => task.id === draggedTask.id);
 
     const targetTask = tasks.find(
       (task) => task.id === parseInt(e.target.closest("div").id)
@@ -89,13 +95,16 @@ function TaskBoardComponent() {
       0,
       movedTask
     );
+
+    newList.splice();
+
     setTasks(newList);
     e.preventDefault();
   };
 
   return (
     <div>
-      <NewTaskComponent onTaskAdd={fetchTasks}/>
+      <NewTaskComponent onTaskAdd={fetchTasks} />
       <div className={classes["tasks-container"]}>
         {tasks ? (
           tasks.map((task) => (
@@ -111,24 +120,26 @@ function TaskBoardComponent() {
               onDragLeave={(e) => handleDragLeave(e, task)}
               onDrop={handleDrop}
             >
-              <h2>{task.title}</h2>
+              <p>{task.date.toLocaleDateString()}</p>
               <h3>{task.content}</h3>
               <p>{task.id}</p>
-              <DeleteTaskComponent onTaskDelete={fetchTasks}/>
+              <DeleteTaskComponent onTaskDelete={fetchTasks} />
             </div>
           ))
         ) : (
           <div></div>
         )}
         {showSaveBtn ? (
-          <div className={classes.saveSortedList}>
-            <button onClick={() => {postAllTasks(); setShowSaveBtn(false)}} className={classes.saveBtn}>
-              save changes
-            </button>
-            <button onClick={() => {fetchTasks(); setShowSaveBtn(false)}} className={classes.saveBtn}>
-              discard changes
-            </button>
-          </div>
+          <SaveButtonComponent
+            onPost={() => {
+              postAllTasks();
+              setShowSaveBtn(false);
+            }}
+            onFetch={() => {
+              fetchTasks();
+              setShowSaveBtn(false);
+            }}
+          />
         ) : null}
       </div>
     </div>
