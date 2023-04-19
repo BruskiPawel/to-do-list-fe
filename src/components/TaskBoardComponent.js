@@ -14,6 +14,8 @@ function TaskBoardComponent() {
   const [isLoggedin, setIsLoggedin] = useState(false);
 
   const getAllTasks = (taskArr) => {
+    console.log(" get all tasks");
+    console.log(taskArr);
     const updatedTasks = taskArr.map((task) => ({
       id: task.id,
       date: new Date(
@@ -25,6 +27,7 @@ function TaskBoardComponent() {
       ),
       content: task.content,
     }));
+    console.log("po mapingu: " + updatedTasks);
     setTasks(updatedTasks);
   };
   const postAllTasks = (data) => {
@@ -40,7 +43,8 @@ function TaskBoardComponent() {
       Accept: "application/json",
     },
     null,
-    getAllTasks
+    getAllTasks,
+    null
   );
 
   const { postError, sendRequest: postTasks } = useHTTP(
@@ -48,17 +52,20 @@ function TaskBoardComponent() {
     "POST",
     { "Content-Type": "application/json" },
     sortedTasks,
-    postAllTasks
+    postAllTasks,
+    null
   );
 
   useEffect(() => {
-    setShowSaveBtn(false)
-    fetchTasks();
-  }, []);
+    if (isLoggedin) {
+      setShowSaveBtn(false);
+      fetchTasks();
+    }
+  }, [isLoggedin]);
 
   useEffect(() => {
     if (sortedTasks) {
-      setShowSaveBtn(false)
+      setShowSaveBtn(false);
       postTasks();
     }
   }, [sortedTasks]);
@@ -107,44 +114,55 @@ function TaskBoardComponent() {
 
   return (
     <div>
-      {isLoggedin? (<LoginFormComponent isLoggedin={fetchTasks} onloggedin={() => {setIsLoggedin(true)}}/>) : (<div><NewTaskComponent onTaskAdd={fetchTasks} />
-      <div className={classes["tasks-container"]}>
-        {tasks ? (
-          tasks.map((task) => (
-            <div
-              className={classes.task}
-              key={task.id}
-              id={task.id}
-              draggable
-              onDragStart={(e) => handleDragStart(e, task)}
-              onDragOver={handleDragOver}
-              onDragEnd={handleDragEnd}
-              onDragEnter={(e) => handleDragEnter(e, task)}
-              onDragLeave={(e) => handleDragLeave(e, task)}
-              onDrop={handleDrop}
-            >
-              <p>{task.date.toLocaleDateString()}</p>
-              <h3>{task.content}</h3>
-              <p>{task.id}</p>
-              <DeleteTaskComponent onTaskDelete={fetchTasks} />
-            </div>
-          ))
-        ) : (
-          <div></div>
-        )}
-        {showSaveBtn ? (
-          <SaveButtonComponent
-            onPost={() => {
-              postAllTasks();
-              setShowSaveBtn(false);
-            }}
-            onFetch={() => {
-              fetchTasks();
-              setShowSaveBtn(false);
-            }}
-          />
-        ) : null}
-      </div></div>)}
+      {!isLoggedin ? (
+        <LoginFormComponent
+          isLoggedin={fetchTasks}
+          onloggedin={() => {
+            setIsLoggedin(true);
+          }}
+        />
+      ) : (
+        <div>
+          <NewTaskComponent onTaskAdd={fetchTasks} />
+          <div className={classes["tasks-container"]}>
+            {tasks ? (
+              tasks.map((task) => (
+                <div
+                  className={classes.task}
+                  key={task.id}
+                  id={task.id}
+                  draggable
+                  onDragStart={(e) => handleDragStart(e, task)}
+                  onDragOver={handleDragOver}
+                  onDragEnd={handleDragEnd}
+                  onDragEnter={(e) => handleDragEnter(e, task)}
+                  onDragLeave={(e) => handleDragLeave(e, task)}
+                  onDrop={handleDrop}
+                >
+                  <p>{task.date.toLocaleDateString()}</p>
+                  <h3>{task.content}</h3>
+                  <p>{task.id}</p>
+                  <DeleteTaskComponent onTaskDelete={fetchTasks} />
+                </div>
+              ))
+            ) : (
+              <div></div>
+            )}
+            {showSaveBtn ? (
+              <SaveButtonComponent
+                onPost={() => {
+                  postAllTasks();
+                  setShowSaveBtn(false);
+                }}
+                onFetch={() => {
+                  fetchTasks();
+                  setShowSaveBtn(false);
+                }}
+              />
+            ) : null}
+          </div>
+        </div>
+      )}
     </div>
   );
 }

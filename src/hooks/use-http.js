@@ -14,9 +14,11 @@ const useHTTP = (url, method, header, body, applyData, responseHandler) => {
       if (!response.ok) {
         throw new Error("Request failed!");
       }
-      responseHandler(response);
+
       const data = await response.json();
-      applyData(data);
+
+      applyData == null ? responseHandler() : applyData(data);
+      
     } catch (err) {
       setError(err.message || "Something went wrong!");
     }

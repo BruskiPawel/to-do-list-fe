@@ -10,10 +10,11 @@ const LoginFormComponent = (props) => {
     setUser({ username: username, password: password });
   };
   const loginHandler = (response) => {
-    if(response.ok) {
+    console.log(response);
+    
         props.onloggedin();
         props.isLoggedin();
-    }
+    
   };
 
   const { postError, sendRequest: loginUser } = useHTTP(
