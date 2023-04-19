@@ -4,12 +4,14 @@ import NewTaskComponent from "./NewTaskComponent";
 import DeleteTaskComponent from "./DeleteTaskComponent";
 import classes from "./TaskBoardComponent.module.css";
 import SaveButtonComponent from "./SaveButtonComponent";
+import LoginFormComponent from "./LoginFormComponent";
 
 function TaskBoardComponent() {
   const [tasks, setTasks] = useState(null);
   const [sortedTasks, setSortedTasks] = useState(null);
   const [draggedTask, setDraggedTask] = useState(null);
   const [showSaveBtn, setShowSaveBtn] = useState(false);
+  const [isLoggedin, setIsLoggedin] = useState(false);
 
   const getAllTasks = (taskArr) => {
     const updatedTasks = taskArr.map((task) => ({
@@ -25,8 +27,9 @@ function TaskBoardComponent() {
     }));
     setTasks(updatedTasks);
   };
-  const postAllTasks = () => {
+  const postAllTasks = (data) => {
     console.log("im in post all compo");
+    console.log(data);
     setSortedTasks(tasks);
   };
 
@@ -48,12 +51,12 @@ function TaskBoardComponent() {
     postAllTasks
   );
 
-  const fetch = useEffect(() => {
+  useEffect(() => {
     setShowSaveBtn(false)
     fetchTasks();
   }, []);
 
-  const post = useEffect(() => {
+  useEffect(() => {
     if (sortedTasks) {
       setShowSaveBtn(false)
       postTasks();
@@ -104,7 +107,7 @@ function TaskBoardComponent() {
 
   return (
     <div>
-      <NewTaskComponent onTaskAdd={fetchTasks} />
+      {isLoggedin? (<LoginFormComponent isLoggedin={fetchTasks} onloggedin={() => {setIsLoggedin(true)}}/>) : (<div><NewTaskComponent onTaskAdd={fetchTasks} />
       <div className={classes["tasks-container"]}>
         {tasks ? (
           tasks.map((task) => (
@@ -141,7 +144,7 @@ function TaskBoardComponent() {
             }}
           />
         ) : null}
-      </div>
+      </div></div>)}
     </div>
   );
 }

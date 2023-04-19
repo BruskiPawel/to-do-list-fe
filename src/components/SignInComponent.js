@@ -3,17 +3,18 @@ import useHTTP from "../hooks/use-http";
 
 const SingInComponent = () => {
   const [newUser, setNewUser] = useState(null);
-  const [userName, setUserName] = useState("");
+  const [username, setUsername] = useState("");
   const [email, setEmail] = useState("");
   const [password, setPassword] = useState("");
   const [repeatedPassword, setRepeatedPassword] = useState("");
   const submitHandler = (e) => {
     e.preventDefault();
-    console.log("submitHandler");
-    setNewUser({userName: userName, eMail: email, password: password});
+    setNewUser({username: username, eMail: email, password: password});
     console.log(newUser)
   };
-  const postedUser = () => {};
+  const postedUser = () => {
+    console.log("postedUser");
+  };
 
   const { postError, sendRequest: postUser } = useHTTP(
     "http://localhost:8080/new_user",
@@ -37,8 +38,8 @@ const SingInComponent = () => {
         <input
           type="text"
           id="user-name"
-          value={userName}
-          onChange={(event) => setUserName(event.target.value)}
+          value={username}
+          onChange={(event) => setUsername(event.target.value)}
         />
       </div>
       <div>
