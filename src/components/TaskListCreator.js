@@ -1,5 +1,5 @@
 
-export const TaskListCreator = (tasks) => {
+export const taskListCreator = (tasks) => {
   const newList = tasks.map((task) => ({
     id: task.id,
     date: new Date(
