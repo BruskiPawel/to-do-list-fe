@@ -13,9 +13,6 @@ const DeleteTaskComponent = (props) => {
   };
   const { error, sendRequest: fetchTasks } = useHTTP(
     ACTIONS.DELETE_TASK,
-    null,
-    null,
-    null
   );
 
   const fetch = useEffect(() => {

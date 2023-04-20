@@ -1,6 +1,6 @@
 
 export const ACTIONS = {
-  FETCH_ALL_TASKS: {
+  GET_ALL_TASKS: {
     URL: "http://localhost:8080/tasks",
     METHOD: "GET",
     HEADER: { "Content-Type": "application/json" },
@@ -23,4 +23,9 @@ export const ACTIONS = {
     METHOD: "DELETE",
     HEADER: { "Content-Type": "application/json" },
   },
+
+  GET_ALL: "get_all",
+
+
+  
 };

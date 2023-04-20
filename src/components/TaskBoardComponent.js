@@ -5,44 +5,40 @@ import DeleteTaskComponent from "./DeleteTaskComponent";
 import classes from "./TaskBoardComponent.module.css";
 import SaveButtonComponent from "./SaveButtonComponent";
 import LoginFormComponent from "./LoginFormComponent";
-import { reducer } from "../reducer/Reducer";
+import { Reducer } from "../reducer/Reducer";
 import { ACTIONS, actions } from "../Actions";
 import Task from "./TaskComponent.js";
+import { TaskListCreator } from "./TaskListCreator";
 
 function TaskBoardComponent() {
-  const [state, dispatch] = useReducer(reducer, {} );
-
+  //const [taski, dispatch] = useReducer(Reducer, []);
   const [tasks, setTasks] = useState(null);
-  const [sortedTasks, setSortedTasks] = useState(null);
-  const [draggedTask, setDraggedTask] = useState(null);
-  const [showSaveBtn, setShowSaveBtn] = useState(false);
   const [isLoggedin, setIsLoggedin] = useState(false);
+  const [sortedTasks, setSortedTasks] = useState(null);
+  //const [draggedTask, setDraggedTask] = useState(null);
+  const [showSaveBtn, setShowSaveBtn] = useState(false);
 
   const getAllTasks = (taskArr) => {
-    const updatedTasks = taskArr.map((task) => ({
-      id: task.id,
-      date: new Date(
-        task.date[0],
-        task.date[1],
-        task.date[2],
-        task.date[3],
-        task.date[4]
-      ),
-      content: task.content,
-    }));
-    setTasks(updatedTasks);
+    setTasks(TaskListCreator(taskArr));
   };
+
+  const { error, sendRequest: fetchTasks } = useHTTP(
+    ACTIONS.GET_ALL_TASKS,
+    null,
+    getAllTasks
+  );
+
+  useEffect(() => {
+   
+      setShowSaveBtn(false);
+      fetchTasks();
+    
+  }, [isLoggedin]);
+
+  console.log("TASKI Z DISPATCH" + sortedTasks);
   // const postAllTasks = (data) => {
   //   setSortedTasks(tasks);
   // };
-
-  const { error, sendRequest: fetchTasks } = useHTTP(
-
-    ACTIONS.FETCH_ALL_TASKS,
-    null,
-    getAllTasks,
-    null
-  );
 
   // const { postError, sendRequest: postTasks } = useHTTP(
   //   "http://localhost:8080/post_sorted_tasks",
@@ -53,34 +49,30 @@ function TaskBoardComponent() {
   //   null
   // );
 
-  useEffect(() => {
-      setShowSaveBtn(false);
-      fetchTasks();
-      setTasks(dispatch({type: ACTIONS.FETCH_ALL}))
-  }, [isLoggedin]);
-
-  useEffect(() => {
-    if (sortedTasks) {
-      setShowSaveBtn(false);
-      //postTasks();
-    }
-  }, [sortedTasks]);
-
+  // useEffect(() => {
+  //   if (sortedTasks) {
+  //     setShowSaveBtn(false);
+  //     //postTasks();
+  //   }
+  // }, [sortedTasks]);
+  console.log("TASK BOARD rerendered");
   return (
     <div>
-      {!isLoggedin ? (
+      {isLoggedin ? (
         <LoginFormComponent
-          isLoggedin={fetchTasks}
+      
           onloggedin={() => {
             setIsLoggedin(true);
           }}
         />
       ) : (
         <div>
-          <NewTaskComponent onTaskAdd={fetchTasks} />
+          <NewTaskComponent  />
           <div className={classes["tasks-container"]}>
             {tasks ? (
-              tasks.map((task) => {return <Task key={task.id} task={task} />})
+              tasks.map((task) => {
+                return <Task key={task.id} task={task} />;
+              })
             ) : (
               <div></div>
             )}
@@ -91,7 +83,7 @@ function TaskBoardComponent() {
                   setShowSaveBtn(false);
                 }}
                 onFetch={() => {
-                  fetchTasks();
+                  //fetchTasks();
                   setShowSaveBtn(false);
                 }}
               />
