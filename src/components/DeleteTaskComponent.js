@@ -1,6 +1,7 @@
 import { useEffect, useState } from "react";
 import useHTTP from "../hooks/use-http";
 import classes from "./TaskBoardComponent.module.css";
+import { ACTIONS } from "../Actions";
 
 const DeleteTaskComponent = (props) => {
   const [taskToDeleteId, setTaskToDeleteId] = useState(null);
@@ -11,11 +12,8 @@ const DeleteTaskComponent = (props) => {
    setTaskToDeleteId(e.target.previousSibling.textContent);
   };
   const { error, sendRequest: fetchTasks } = useHTTP(
-    "http://localhost:8080/delete-task/" + taskToDeleteId,
-    "DELETE",
-    {
-      Accept: "application/json",
-    },
+    ACTIONS.DELETE_TASK,
+    null,
     null,
     null
   );

@@ -1,5 +1,6 @@
 import { useEffect, useState } from "react";
 import useHTTP from "../hooks/use-http";
+import { ACTIONS } from "../Actions";
 
 const NewTaskComponent = (props) => {
   const [newTask, setNewTask] = useState(null);
@@ -18,10 +19,9 @@ const NewTaskComponent = (props) => {
   };
 
   const { error, sendRequest: PostNewTask } = useHTTP(
-    "http://localhost:8080/add-new-task",
-    "POST",
-    {'Content-Type': 'application/json'},
+    ACTIONS.SAVE_NEW_TASK,
     newTask,
+    null,
     null
   );
 

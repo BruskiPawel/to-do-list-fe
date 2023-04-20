@@ -1,16 +1,15 @@
 import { useState } from "react";
 
-const useHTTP = (url, method, header, body, applyData, responseHandler) => {
+const useHTTP = (DATA, body, applyData, responseHandler) => {
   const [error, setError] = useState(null);
 
   const sendRequest = async (taskText) => {
     try {
-      const response = await fetch(url, {
-        method: method,
+      const response = await fetch(DATA.URL, {
+        method: DATA.METHOD,
         body: body ? JSON.stringify(body) : null,
-        headers: header ? header : null,
+        headers: DATA.HEADER ? DATA.HEADER : null,
       });
-      console.log("jestem w use HTTP" + response);
       if (!response.ok) {
         throw new Error("Request failed!");
       }

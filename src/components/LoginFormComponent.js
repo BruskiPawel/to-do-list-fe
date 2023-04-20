@@ -1,31 +1,29 @@
-import { useEffect, useState } from "react";
+import { useCallback, useEffect, useState } from "react";
 import useHTTP from "../hooks/use-http";
+import { ACTIONS } from "../Actions";
 
 const LoginFormComponent = (props) => {
   const [username, setUsername] = useState("");
   const [password, setPassword] = useState("");
   const [user, setUser] = useState(null);
+
   const handleSubmit = (e) => {
     e.preventDefault();
     setUser({ username: username, password: password });
   };
   const loginHandler = (response) => {
     console.log(response);
-    
         props.onloggedin();
         props.isLoggedin();
-    
   };
 
   const { postError, sendRequest: loginUser } = useHTTP(
-    "http://localhost:8080/login_user",
-    "POST",
-    { "Content-Type": "application/json" },
+    ACTIONS.LOG_IN_USER,
     user,
     null,
     loginHandler
   );
-
+  
   useEffect(() => {
     if (user) {
       loginUser();

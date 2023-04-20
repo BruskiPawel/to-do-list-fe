@@ -1,0 +1,10 @@
+.task {
+    position: relative;
+    background-color: rgb(205, 205, 252);
+    width:20rem;
+    margin-top: 10px;
+    margin-bottom: 10px;
+    min-height: 10rem;
+    box-shadow: 2px 2px 5px #999;
+    transition: 0.3s;
+}
