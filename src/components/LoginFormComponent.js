@@ -1,20 +1,15 @@
 import { useEffect, useState } from "react";
 import useHTTP from "../hooks/use-http";
+import classes from "./LoginFormComponent.module.css";
 
 const LoginFormComponent = (props) => {
   const [username, setUsername] = useState("");
   const [password, setPassword] = useState("");
   const [user, setUser] = useState(null);
+
   const handleSubmit = (e) => {
     e.preventDefault();
     setUser({ username: username, password: password });
-  };
-  const loginHandler = (response) => {
-    console.log(response);
-    
-        props.onloggedin();
-        props.isLoggedin();
-    
   };
 
   const { postError, sendRequest: loginUser } = useHTTP(
@@ -22,13 +17,12 @@ const LoginFormComponent = (props) => {
     "POST",
     { "Content-Type": "application/json" },
     user,
-    null,
-    loginHandler
   );
 
   useEffect(() => {
     if (user) {
       loginUser();
+      props.onUserLogin(true);
     }
   }, [user]);
 
@@ -50,7 +44,8 @@ const LoginFormComponent = (props) => {
           setPassword(event.target.value);
         }}
       />
-      <button type="submit">Log In</button>
+      <button type="submit">Log in</button>
+      <button type="button">Sing in</button>
     </form>
   );
 };

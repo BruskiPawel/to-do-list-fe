@@ -1,6 +1,6 @@
 import { useEffect, useState } from "react";
 import useHTTP from "../hooks/use-http";
-import classes from "./TaskBoardComponent.module.css";
+import classes from "./DeleteTaskComponent.module.css";
 
 const DeleteTaskComponent = (props) => {
   const [taskToDeleteId, setTaskToDeleteId] = useState(null);
@@ -27,7 +27,7 @@ const DeleteTaskComponent = (props) => {
   }, [taskToDeleteId]);
 
   return (
-      <button onClick={taskToDeleteHandler} className={classes.deleteBtn}>delete</button>
+      <button onClick={taskToDeleteHandler} >delete</button>
   );
 };
 

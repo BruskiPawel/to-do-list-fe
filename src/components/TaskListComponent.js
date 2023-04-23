@@ -1,13 +1,16 @@
-import { useEffect, useState } from "react";
+import { useEffect, useState, useReducer } from "react";
 import useHTTP from "../hooks/use-http";
 import DeleteTaskComponent from "./DeleteTaskComponent";
-import classes from "./TaskBoardComponent.module.css";
+import SaveButtonComponent from "./SaveButtonComponent";
+import classes from "./TaskListComponent.module.css";
+
 
 const TaskListComponent = (props) => {
   const [tasks, setTasks] = useState(null);
   const [sortedTasks, setSortedTasks] = useState(null);
   const [draggedTask, setDraggedTask] = useState(null);
-
+  const [showButton, setShowButton] = useState(false);
+  
   const getAllTasks = (taskArr) => {
     const mapedTasks = taskArr.map((task) => ({
       id: task.id,
@@ -22,6 +25,10 @@ const TaskListComponent = (props) => {
     }));
     setTasks(mapedTasks);
   };
+  const postAllTasks = (data) => {
+    setSortedTasks(tasks);
+    console.log("postAllTasks called", data);
+  };
   const { error, sendRequest: fetchTasks } = useHTTP(
     "http://localhost:8080/tasks",
     "GET",
@@ -33,17 +40,6 @@ const TaskListComponent = (props) => {
     null
   );
 
-  useEffect(() => {
-     if (props.isLoggedIn || props.shouldRerender) {
-        props.onTasksChange(false);
-      fetchTasks();
-    }
-  }, [props.isLoggedIn, props.shouldRerender]);
-
-  const postAllTasks = (data) => {
-    setSortedTasks(tasks);
-  };
-
   const { postError, sendRequest: postTasks } = useHTTP(
     "http://localhost:8080/post_sorted_tasks",
     "POST",
@@ -54,14 +50,20 @@ const TaskListComponent = (props) => {
   );
 
   useEffect(() => {
-    if (sortedTasks ) {
-        console.log("posting tasks")
-        console.log(sortedTasks)
-      props.onTasksChange(false);
+    if (sortedTasks) {
+      console.log("posting tasks");
+      setShowButton(false);
       postTasks();
       fetchTasks();
     }
   }, [sortedTasks]);
+
+  useEffect(() => {
+    if (props.isLoggedIn) {
+      setShowButton(false);
+      fetchTasks();
+    }
+  }, [props.isLoggedIn]);
 
   const handleDragStart = (e, item) => {
     setDraggedTask(item);
@@ -83,8 +85,10 @@ const TaskListComponent = (props) => {
   };
 
   const handleDrop = (e) => {
-    props.onTasksChange(true);
+    e.preventDefault();
+    setShowButton(true);
     e.target.closest("div").classList.remove(classes.dragged);
+
 
     const movedTask = tasks.find((task) => task.id === draggedTask.id);
 
@@ -98,17 +102,11 @@ const TaskListComponent = (props) => {
       0,
       movedTask
     );
-
-    newList.splice();
-
     setTasks(newList);
-    e.preventDefault();
   };
 
-  
-
   return (
-    <>
+    <div className={classes['tasks-container']}>
       {tasks ? (
         tasks.map((task) => (
           <div
@@ -130,9 +128,12 @@ const TaskListComponent = (props) => {
           </div>
         ))
       ) : (
-        <div></div>
+        <div>
+          <h2>add some tasks</h2>
+        </div>
       )}
-    </>
+      {showButton? <SaveButtonComponent onSave={postAllTasks} onDiscard={fetchTasks}/> : null}
+    </div>
   );
 };
 
