@@ -1,27 +1,72 @@
 .dragged {
-    background-color: aquamarine;
-    transition: 0.6s;
+  background-color: aquamarine;
+  transition: 0.6s;
 }
 
 .dragged-over {
-transform: scale(1.1);
+  transform: scale(1.1);
 }
 .task {
-    position: relative;
-    background-color: rgb(205, 205, 252);
-    width:20rem;
-    margin-top: 10px;
-    margin-bottom: 10px;
-    min-height: 10rem;
-    box-shadow: 2px 2px 5px #999;
-    transition: 0.3s;
+  position: relative;
+  width: 20rem;
+  margin-top: 5px;
+  margin-bottom: 10px;
+  height: 8.5rem;
+  box-shadow: 4px 4px 7px #404a3c;
+  border-radius: 5%;
+  transition: 0.3s;
 }
 .tasks-container {
-    display: flex;
-    flex-direction: column;
-    justify-content: center;
-    align-items: center;
-    width: 90%;
-    min-height: 70vh;
-    background-color: lavender;
-  }
+  align-items: center;
+  width: 25rem;
+  height: 90vh;
+  overflow: scroll;
+  padding: 1rem;
+  margin-right: 10rem;
+  border-left: 2px solid #2A3E38;
+  border-right: 2px solid #2A3E38;
+  
+}
+
+.tasks-container::-webkit-scrollbar {
+  width: 0.5em;
+}
+
+.tasks-container::-webkit-scrollbar-track {
+  background: #364B44;
+}
+
+.tasks-container::-webkit-scrollbar-thumb {
+  background: #BBD8D4;
+}
+
+.tasks-container::-webkit-scrollbar-thumb:hover {
+  background: #E6FFF6;
+}
+
+h3 {
+  text-align: center;
+  color: #2f4858;
+}
+
+p {
+  display: block;
+  height: 2rem;
+  text-align: center;
+  line-height: 2rem;
+  color: #2f4858;
+  background-color: #E8FCFF;
+  border-top: 4px solid #6e8e95;
+}
+
+.expired {
+background-color: #FFC9AC;
+}
+
+.almost {
+  background-color: #F5DAA6;
+}
+
+.weeks {
+background-color: #E6FFF6;
+}

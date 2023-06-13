@@ -25,7 +25,16 @@ input {
     border-radius: 10%;
     background-color: #DEF7EE;
     border: none;
-    border-bottom: 2px solid #ADE0CE;
+    border-bottom: 2px solid #6E8E95;
+}
+
+input:focus {
+    background-color: #C8FCEA;
+    outline: none;
+}
+
+label{
+    color: #2F4858;
 }
 
 button {
@@ -34,11 +43,14 @@ button {
     height: 2rem;
     margin-top: 1rem;
     border-radius: 10%;
-    background-color: #B5D2CE;
-    border: 1px solid #8EAEAF;
+    background-color: #BBD8D4;
+    border: none;
+    color: #2F4858;
+    box-shadow: 0px 3px 5px #93B2B4;
 }
 button:hover {
-    background-color: #CDFCD8;
-    border: 1px solid #3D945C;
+    background-color: #C8FCEA;
+    box-shadow: 0px 0px 5px #93B2B4;
 }
+
 

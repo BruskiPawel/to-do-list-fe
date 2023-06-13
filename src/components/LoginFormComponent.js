@@ -5,11 +5,17 @@ import classes from "./LoginFormComponent.module.css";
 const LoginFormComponent = (props) => {
   const [username, setUsername] = useState("");
   const [password, setPassword] = useState("");
+  const [id, setId] = useState("");
   const [user, setUser] = useState(null);
+  const [loggedUser, setLoggedUser] = useState(null);
 
   const handleSubmit = (e) => {
     e.preventDefault();
-    setUser({ username: username, password: password });
+    setUser({ username: username, password: password, id: null });
+  };
+
+  const responseDataHandler = (response) => {
+    setId(response);
   };
 
   const { postError, sendRequest: loginUser } = useHTTP(
@@ -17,14 +23,24 @@ const LoginFormComponent = (props) => {
     "POST",
     { "Content-Type": "application/json" },
     user,
+    responseDataHandler
   );
 
   useEffect(() => {
     if (user) {
       loginUser();
-      props.onUserLogin(true);
+      // props.onUserLogin(true);
+      // props.userName(user);
     }
   }, [user]);
+
+  useEffect(() => {
+    if (id) {
+      console.log("use effect :  " + id)
+      props.onUserLogin(true);
+      props.loggedUser(id);
+    }
+  }, [id]);
 
   return (
     <form onSubmit={handleSubmit}>

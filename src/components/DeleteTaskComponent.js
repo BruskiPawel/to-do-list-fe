@@ -5,29 +5,31 @@ import classes from "./DeleteTaskComponent.module.css";
 const DeleteTaskComponent = (props) => {
   const [taskToDeleteId, setTaskToDeleteId] = useState(null);
 
-  const taskToDeleteHandler = (e) => {
-    e.preventDefault();
-    //console.log(e.target.previousSibling.textContent);
-   setTaskToDeleteId(e.target.previousSibling.textContent);
-  };
-  const { error, sendRequest: fetchTasks } = useHTTP(
+  // const taskToDeleteHandler = (e) => {
+  //   e.preventDefault();
+  //   console.log("Id to delete: " + e.target.parentElement.id);
+  //  setTaskToDeleteId(e.target.parentElement.id);
+  // };
+  const { error, sendRequest: deleteTask } = useHTTP(
     "http://localhost:8080/delete-task/" + taskToDeleteId,
     "DELETE",
     {
-      Accept: "application/json",
+      "Content-Type": "application/json",
     },
     null,
     null
   );
 
-  const fetch = useEffect(() => {
+  useEffect(() => {
     if (taskToDeleteId) {
-      fetchTasks().then(() => props.onTaskDelete());
+      deleteTask().then(() => props.onTaskDelete());
     }
   }, [taskToDeleteId]);
 
   return (
-      <button onClick={taskToDeleteHandler} >delete</button>
+      <button className={classes.delete} onClick={(e) => {
+        setTaskToDeleteId(e.target.parentElement.id)
+      }} >delete</button>
   );
 };
 
